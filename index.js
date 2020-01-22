@@ -15,7 +15,6 @@ const results = []
 const introTag = '--intro--'
 const thumbUrl = 'https://api.unsplash.com/photos/random?client_id=cd8f6ebac5a5ed217bc4674a5fe851f30eb6e92686b8d027adadf602048b49fa'
 const imgReg = /\!\[(.*)\]\((.*\.(jpg|jpeg|png|gif))\)/g
-const ghToken = '104c2a84474d28f84ce9838f857c61da7f40d53f'
 const ghName = 'xiao555'
 const ghEmail = 'zhangruiwu32@gmail.com'
 const cdnRepoLink = 'https://api.github.com/repos/xiao555/netlify'
@@ -23,6 +22,13 @@ const cdnLink = 'https://xiao555.netlify.com'
 const articleRepoLink = 'https://api.github.com/repos/xiao555/blog-articles'
 
 ;(async () => {
+  const { ghToken } = await inquirer.prompt([
+    {
+      name: 'ghToken',
+      type: 'input',
+      message: '请输入github token：',
+    }
+  ])
   try {
     const repoContents = await fetch(`${cdnRepoLink}/contents/`).then(r => r.json())
     const repoFiles = repoContents.map(content => content.name)
@@ -123,8 +129,7 @@ const articleRepoLink = 'https://api.github.com/repos/xiao555/blog-articles'
     )
     console.log(results)
     // publish
-    const articleRepoContents = await fetch(`${articleRepoLink}/contents/`).then(r => r.json())
-    const sha = articleRepoContents.find(item => item.name === 'articles.json').sha
+    const articles = await fetch(`${articleRepoLink}/contents/articles.json`).then(r => r.json())
     let res = await fetch(`${articleRepoLink}/contents/articles.json`, {
       method: 'PUT',
       headers: {
@@ -137,7 +142,7 @@ const articleRepoLink = 'https://api.github.com/repos/xiao555/blog-articles'
           email: ghEmail
         },
         content: new Buffer(JSON.stringify(results)).toString('base64'),
-        sha
+        sha: articles.sha
       })
     }).then(r => r.json())
     console.log(res)
