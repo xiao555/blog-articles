@@ -17,15 +17,21 @@ createDate: 1511136000000
 ### 配置ssh免密登录（mac）
 
 1. 生成密钥
+
 ```
 ssh-keygen -t rsa
 ```
+
 一路回车即可，然后执行：
+
 ```
 ls ~/.ssh
 ```
+
 会看到两个密钥文件`id_rsa`(私钥), `id_rsa.pub`（公钥）
+
 2. 配置`~/.ssh/config`
+
 在`~/.ssh/config`（没有就新建）里添加：
 ```
 Host {NAME} # 主机名， 别名
@@ -33,24 +39,31 @@ Host {NAME} # 主机名， 别名
 	User root # 登录用户
 	IdentityFile ~/.ssh/id_rsa # 私钥
 ```
+
 3. 将公钥拷贝到远程主机
+
 ssh登录到远程主机，将公钥内容拷贝到`~/.ssh/authorized_keys`文件后面，如果没有就新建。
 然后就可以免密登录到远程主机了。
 
 ### 配置Shadowsocks-libev + simple-obfs
 
 1. 关闭防火墙
+
 ```
 systemctl stop firewalld
 systemctl disable firewalld
 ```
+
 2. 安装依赖
+
 ```
 yum -y install epel-release
 yum -y update
 yum -y install wget gcc automake autoconf libtool make m2crypto autoconf libtool curl curl-devel zlib-devel openssl-devel perl perl-devel cpio expat-devel gettext-devel pcre-devel asciidoc xmlto git
 ```
+
 3. 安装 Libsodium
+
 ```
 export LIBSODIUM_VER=1.0.13
 wget https://download.libsodium.org/libsodium/releases/libsodium-$LIBSODIUM_VER.tar.gz
@@ -61,7 +74,9 @@ sudo make install
 popd
 sudo ldconfig
 ```
+
 4. 安装 MbedTLS
+
 ```
 export MBEDTLS_VER=2.6.0
 wget https://tls.mbed.org/download/mbedtls-$MBEDTLS_VER-gpl.tgz
@@ -72,19 +87,25 @@ sudo make DESTDIR=/usr install
 popd
 sudo ldconfig
 ```
+
 5. 下载 Shadowsocks-libev 源码
+
 ```
 cd ~
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
 cd shadowsocks-libev
 git submodule update --init --recursive
 ```
+
 6. 编译 Shadowsocks-libev
+
 ```
 cd ~/shadowsocks-libev
 ./autogen.sh && ./configure --prefix=/usr/local/shadowsocks-libev && make && make install
 ```
+
 7. 安装 Simple-obfs
+
 ```
 git clone https://github.com/shadowsocks/simple-obfs.git
 cd simple-obfs
@@ -94,6 +115,7 @@ git submodule update --init --recursive
 make install
 ```
 8. Shadowsocks-libev Systemd 配置文件
+
 ```
 vim /etc/systemd/system/shadowsocks-libev.service
 #  This file is part of shadowsocks-libev.
@@ -120,7 +142,9 @@ CapabilityBoundingSet=CAP_NET_BIND_SERVICE
 [Install]
 WantedBy=multi-user.target
 ```
+
 9. 创建配置文件
+
 ```
 vi /etc/shadowsocks-libev/config.json
 
@@ -135,12 +159,15 @@ vi /etc/shadowsocks-libev/config.json
     "plugin_opts": "obfs=http"
 }
 ```
+
 10.  Systemd 启动 Shadowsocks-libev
+
 ```
 systemctl enable shadowsocks-libev.service
 systemctl start shadowsocks-libev.service
 systemctl status shadowsocks-libev.service
 ```
+
 OK. 荷兰机房的速度还是不错的，YouTube 1080p 基本不卡。
 
 ### 参考资料
