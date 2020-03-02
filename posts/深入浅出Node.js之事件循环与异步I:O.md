@@ -69,7 +69,7 @@ getData('from_remote_api', function (result) {
 
 I/O是昂贵的，**异步I/O能更快的响应资源**。
 
-![28b0c513315b4c13a96a46f7ac7bac6b_image.png](http://tech.yuceyi.com/upload/28b0c513315b4c13a96a46f7ac7bac6b_image.png)
+![28b0c513315b4c13a96a46f7ac7bac6b_image.png](https://xiao555.netlify.com/28b0c513315b4c13a96a46f7ac7bac6b_image.png)
 
 官方有个小例子也体现了异步的高效：[https://nodejs.org/en/docs/guides/simple-profiling/](https://nodejs.org/en/docs/guides/simple-profiling/)
 
@@ -85,11 +85,11 @@ I/O是昂贵的，**异步I/O能更快的响应资源**。
 
 阻塞I/O是调用之后一定要等到数据返回，这个调用才结束。
 
-![4d19e938b5644a81924735fca57a4723_image.png](http://tech.yuceyi.com/upload/4d19e938b5644a81924735fca57a4723_image.png)
+![4d19e938b5644a81924735fca57a4723_image.png](https://xiao555.netlify.com/4d19e938b5644a81924735fca57a4723_image.png)
 
 阻塞I/O造成CPU等待I/O, 浪费等待时间，CPU的处理能力不能得到充分利用。为了提高性能，内核提供了非阻塞I/O。
 
-![803ca124254e42198715f684acc85f1e_image.png](http://tech.yuceyi.com/upload/803ca124254e42198715f684acc85f1e_image.png)
+![803ca124254e42198715f684acc85f1e_image.png](https://xiao555.netlify.com/803ca124254e42198715f684acc85f1e_image.png)
 
 操作系统对计算机进行了抽象，将所有输入输出设备抽象为文件。内核在进行文件I/O操作时，通过文件描述符(fd)进行管理。进行I/O调用时，先打开文件描述符，再根据文件描述符去实现文件的数据读写。
 
@@ -99,17 +99,17 @@ I/O是昂贵的，**异步I/O能更快的响应资源**。
 
 read是最原始，性能最低的一种，通过重复调用来检查I/O状态获取完整的数据。在得到数据前，CPU一直耗在等待上。
 
-![30ebef2fb9304bf2b07bf3680ab9e7b0_image.png](http://tech.yuceyi.com/upload/30ebef2fb9304bf2b07bf3680ab9e7b0_image.png)
+![30ebef2fb9304bf2b07bf3680ab9e7b0_image.png](https://xiao555.netlify.com/30ebef2fb9304bf2b07bf3680ab9e7b0_image.png)
 
 select在read基础上进行了改进，可以同时监听多个文件描述符，进行非阻塞调用后，通过不断遍历每个文件描述符上的事件状态来判断I/O是否完成，属于多路复用I/O的一种。它的限制是状态存储在一个1024长度的数组中，所以最多同时检查1024个文件描述符。
 
-![e4f98fc94dc6422b944cd208e5c6c94f_image.png](http://tech.yuceyi.com/upload/e4f98fc94dc6422b944cd208e5c6c94f_image.png)
+![e4f98fc94dc6422b944cd208e5c6c94f_image.png](https://xiao555.netlify.com/e4f98fc94dc6422b944cd208e5c6c94f_image.png)
 
 poll跟sellect类似，进行了一些改进，采用链表的方式突破数组的长度限制。但是poll和select都需要遍历，当文件描述符比较多的时候，性能比较低。
 
 epoll是Linux下效率最高的I/O事件通知机制，如果没有检查到I/O事件，会进行休眠，直到事件将它唤醒。利用了事件通知，执行回调的方式，而不是遍历查询，不会浪费CPU，执行效率高。但是如果I/O事件并不多的情况下，epoll并非性能最高的，毕竟实现事件通知机制也会有一定消耗。
 
-![eac966fd47684d69a005ff291ee1fb9f_image.png](http://tech.yuceyi.com/upload/eac966fd47684d69a005ff291ee1fb9f_image.png)
+![eac966fd47684d69a005ff291ee1fb9f_image.png](https://xiao555.netlify.com/eac966fd47684d69a005ff291ee1fb9f_image.png)
 
 如果要形象的描述一下这几个轮询，可以理解为公司有好几个需求(I/O事件)需要开发，每个需求分配了一个产品(线程)，每个需求交给一个开发去完成(进行I/O调用)，每个产品需要不断的去问对应的开发需求(I/O调用)是否完成，这就是read。
 
@@ -121,17 +121,17 @@ epoll是Linux下效率最高的I/O事件通知机制，如果没有检查到I/O�
 
 我们期望的异步I/O是应用程序发起I/O调用后，无须通过遍历或者事件通知等方式轮询，可以直接处理后续逻辑，只需要在I/O完成后将数据返回给应用程序执行回调。
 
-![3b9cb346c07149638576a41fabff06f6_image.png](http://tech.yuceyi.com/upload/3b9cb346c07149638576a41fabff06f6_image.png)
+![3b9cb346c07149638576a41fabff06f6_image.png](https://xiao555.netlify.com/3b9cb346c07149638576a41fabff06f6_image.png)
 
 而现实中的异步I/O大多是通过线程池的方式来间接实现的。让部分线程进行阻塞I/O或者非阻塞I/O加轮询技术来完成数据获取，让一个线程进行计算处理，通过线程之间的通信进行数据传递，可以轻松实现异步I/O。
 
-![8f524f1ae111459f99a01b58674b6bd9_image.png](http://tech.yuceyi.com/upload/8f524f1ae111459f99a01b58674b6bd9_image.png)
+![8f524f1ae111459f99a01b58674b6bd9_image.png](https://xiao555.netlify.com/8f524f1ae111459f99a01b58674b6bd9_image.png)
 
 ### 跨平台的异步I/O实现
 
 Node是跨平台的，上面我们说的就是Unix系统，在Windows平台上，本身提供了一个理想的异步I/O——IOCP，虽然它内部仍然是线程池的原理，只不过这些线程池是有系统内核管理的而非应用程序。Node提供了libuv作为抽象封装层，兼容了不同平台间的差异。
 
-![de7a832ab9af4b6dad29b499873f0efb_image.png](http://tech.yuceyi.com/upload/de7a832ab9af4b6dad29b499873f0efb_image.png)
+![de7a832ab9af4b6dad29b499873f0efb_image.png](https://xiao555.netlify.com/de7a832ab9af4b6dad29b499873f0efb_image.png)
 
 所以虽然我们常说Node是单线程的，其实只是说js执行在单线程中，内部完成I/O任务的另有线程池。
 
@@ -143,7 +143,7 @@ Node是跨平台的，上面我们说的就是Unix系统，在Windows平台上�
 
 在进程启动时，Node便会创建一个类似于while(true)的循环，每执行一次循环体的过程我们称为Tick。每个Tick的过程就是查看是否有事件待处理，如果有，就取出事件及其相关的回调函数。如果存在关联的回调函数，就执行它们。然后进入下个循环，如果不再有事件处理，就退出进程。
 
-![bdecb4903b1e4bd9b892a1e82a0644b4_image.png](http://tech.yuceyi.com/upload/bdecb4903b1e4bd9b892a1e82a0644b4_image.png)
+![bdecb4903b1e4bd9b892a1e82a0644b4_image.png](https://xiao555.netlify.com/bdecb4903b1e4bd9b892a1e82a0644b4_image.png)
 
 #### 观察者
 
@@ -173,7 +173,7 @@ I/O观察者回调函数的行为就是取出请求对象的result属性作为�
 
 以Windows平台上的IOCP为例，整个异步I/O的流程大概是：
 
-![61ad2742e89c4c249712ce65c4e387ae_image.png](http://tech.yuceyi.com/upload/61ad2742e89c4c249712ce65c4e387ae_image.png)
+![61ad2742e89c4c249712ce65c4e387ae_image.png](https://xiao555.netlify.com/61ad2742e89c4c249712ce65c4e387ae_image.png)
 
 事件循环、观察者、请求对象、I/O线程池这四者共同构成了Node异步I/O模型的基本要素。
 
@@ -181,7 +181,7 @@ I/O观察者回调函数的行为就是取出请求对象的result属性作为�
 
 事件驱动是在持续的事物管理过程中，由当前时间节点上出现的事件引起的调用可用资源执行相关任务，解决问题，防止事物堆积的一种策略。前面介绍异步的实现原理也基本勾勒处理事件驱动的实质，即通过主循环加事件触发的方式来运行程序。基于Node构建的Web服务器也是通过事件驱动来处理请求的。
 
-![9142627df5b34afcbc6450c11f0ea42a_image.png](http://tech.yuceyi.com/upload/9142627df5b34afcbc6450c11f0ea42a_image.png)
+![9142627df5b34afcbc6450c11f0ea42a_image.png](https://xiao555.netlify.com/9142627df5b34afcbc6450c11f0ea42a_image.png)
 
 下面为几种经典的服务器模型
 
@@ -191,8 +191,8 @@ I/O观察者回调函数的行为就是取出请求对象的result属性作为�
 
 多线程优点是可以高效利用多核CPU，缺点是创建线程需要消耗内存，CPU在线程之间进行上下文切换需要花费时间，还有最头痛的状态同步问题等等。Apache采用的是每线程/每请求的方式，而Nginx则是事件驱动，我们看一下这两个的性能比较：
 
-![67bbbba6a2d34116a2bee74664c9d606_image.png](http://tech.yuceyi.com/upload/67bbbba6a2d34116a2bee74664c9d606_image.png)
-![34e201b99a0f4197b9b66fd53af3886c_image.png](http://tech.yuceyi.com/upload/34e201b99a0f4197b9b66fd53af3886c_image.png)
+![67bbbba6a2d34116a2bee74664c9d606_image.png](https://xiao555.netlify.com/67bbbba6a2d34116a2bee74664c9d606_image.png)
+![34e201b99a0f4197b9b66fd53af3886c_image.png](https://xiao555.netlify.com/34e201b99a0f4197b9b66fd53af3886c_image.png)
 
 
 我们可以看到，随着并发数的增加，nginx每秒处理的请求数更多(省去了多线程上下文切换的消耗)，占用的内存基本不变，apache内存线性增加(每个线程占用一定的内存)。所以事件驱动在处理高并发时性能是非常高的。
