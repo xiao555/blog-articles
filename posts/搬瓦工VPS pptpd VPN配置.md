@@ -6,6 +6,8 @@ createDate: 1455155301793
 ---
 本教程适用于CentOS 6
 
+--intro--
+
 ## 安装pptp
 
     wget --no-check-certificate https://raw.githubusercontent.com/teddysun/across/master/pptp.sh

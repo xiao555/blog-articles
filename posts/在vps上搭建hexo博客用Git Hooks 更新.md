@@ -8,6 +8,8 @@ createDate: 1457431802283
 
 之前一直不清楚搭一个博客需要啥，所以用了[hexo](https://hexo.io/zh-cn/)这个静态博客系统。
 
+--intro--
+
 我的vps系统是Centos 6 x86。
 本机是windows7.
 
