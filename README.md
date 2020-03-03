@@ -90,5 +90,5 @@ end.
 
 访问时通过github的接口：
 
-1. 预览（不推荐，非实时的，这个是github传到aws的静态资源）： https://raw.githubusercontent.com/xiao555/blog-articles/master/articles.json
-2. API（实时的，但是content需要base64转string）: https://api.github.com/repos/xiao555/blog-articles/contents/articles.json
+1. 预览（有延迟，非实时的，这个是github传到aws的静态资源）： https://raw.githubusercontent.com/xiao555/blog-articles/master/articles.json
+2. API（实时的，但是content需要base64转string，而且有访问量限制）: https://api.github.com/repos/xiao555/blog-articles/contents/articles.json
